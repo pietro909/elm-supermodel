@@ -1,22 +1,15 @@
 import Html exposing (beginnerProgram, div, button, text)
 import Html.Events exposing (onClick)
 import Details
+import Invoice
 
 
 main =
     beginnerProgram
-    { model = { name = "model", details = Details.initialModel}
+    { model = initialModel
     , view = view
     , update = update
     }
-
-
-view model =
-  div []
-    [ button [ onClick Decrement ] [ text "-" ]
-    , div [] [ text (toString model) ]
-    , button [ onClick Increment ] [ text "+" ]
-    ]
 
 
 type Msg = Increment | Decrement
@@ -24,20 +17,34 @@ type Msg = Increment | Decrement
 type alias Model =
     { name : String
     , details : Details.Model
+    , invoice : Invoice.Model
     }
 
 
-update msg model =
-  case msg of
-    Increment ->
-      let
-        newDetails = Details.updateDetails 1 model.details
-      in
-        { model | details = newDetails }
+initialModel : Model
+initialModel =
+    { name = "model"
+    , details = Details.initialModel
+    , invoice = Invoice.initialModel
+    }
 
-    Decrement ->
-      let
-        newDetails = Details.updateDetails (-1) model.details
-      in
-        { model | details = newDetails }
+
+view model =
+    div []
+    [ button [ onClick Decrement ] [ text "-" ]
+    , div [] [ text (toString model) ]
+    , button [ onClick Increment ] [ text "+" ]
+    ]
+
+
+update : Msg -> Model -> Model
+update msg model =
+    case msg of
+        Increment ->
+            Details.update 1 model
+            |> Details.mapQuantity Invoice.update
+
+        Decrement ->
+            Details.update -1 model
+            |> Details.mapQuantity Invoice.update
 
