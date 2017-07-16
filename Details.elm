@@ -2,6 +2,7 @@ module Details exposing (Model, initialModel, update, mapQuantity)
 
 {- A separated module, handling the details -}
 
+
 type alias Model =
     { quantity : Int }
 
@@ -21,4 +22,4 @@ update number model =
 
 mapQuantity : (Int -> a -> b) -> a -> Model -> b
 mapQuantity f input model =
-  f model.quantity input
+    f model.quantity input
